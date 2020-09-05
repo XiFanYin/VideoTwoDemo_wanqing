@@ -59,6 +59,7 @@
 
 
             <ImageView
+                android:id="@+id/endcall"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="centerCrop"
@@ -67,6 +68,7 @@
 
 
             <ImageView
+                android:id="@+id/call"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="100dp"

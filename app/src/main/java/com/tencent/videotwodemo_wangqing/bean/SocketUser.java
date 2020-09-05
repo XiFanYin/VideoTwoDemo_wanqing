@@ -1,4 +1,4 @@
-package com.tencent.videotwodemo_wangqing.socketservice;
+package com.tencent.videotwodemo_wangqing.bean;
 
 public class SocketUser {
 

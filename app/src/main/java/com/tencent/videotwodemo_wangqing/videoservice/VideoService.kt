@@ -12,8 +12,9 @@ import android.widget.FrameLayout
 import com.google.gson.Gson
 import com.tencent.videotwodemo_wangqing.R
 import com.tencent.videotwodemo_wangqing.app.App
+import com.tencent.videotwodemo_wangqing.bean.ServicePullData
 import com.tencent.videotwodemo_wangqing.dialog.AlertDialog
-import com.tencent.videotwodemo_wangqing.socketservice.SocketUser
+import com.tencent.videotwodemo_wangqing.bean.SocketUser
 import com.tencent.videotwodemo_wangqing.utils.FloatingWindowHelper
 import com.tencent.videotwodemo_wangqing.utils.MediaHelper
 import com.tencent.videotwodemo_wangqing.utils.dp2px
@@ -66,7 +67,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("456", "李四")
+        user = SocketUser("67890", "李四")
         gson = Gson()
 
     }
@@ -110,13 +111,17 @@ class VideoService : Service(), IVideo {
 
         override fun onMessage(text: String) {
 
-            Log.e("rrrrrrrrrr",text)
+            Log.e("rrrrrrrrr",text)
+
+         val data=  gson.fromJson<ServicePullData>(text, ServicePullData::class.java)
+
+
             //如果正在通话，就告诉服务器，当前人正在通话
             if (videoManager.isCalling) {
             } else {
                 //播放音乐
                 MediaHelper.playSound(assets.openFd("most_lucky.m4a"))
-                showCallDialog()
+                showCallDialog(data)
             }
 
 
@@ -139,7 +144,7 @@ class VideoService : Service(), IVideo {
 
 
     //显示被呼叫的dialog
-    private fun showCallDialog() {
+    private fun showCallDialog(data: ServicePullData) {
         call?.dismiss()
         call = AlertDialog.Builder(this)
             .setContentView(R.layout.dialog_call)
@@ -147,10 +152,26 @@ class VideoService : Service(), IVideo {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+            .setText(R.id.userName,data.username)
+            .setOnClickListener(R.id.endcall,{
+                //停止播放音乐
+                MediaHelper.stop()
+                call?.dismiss()
+            })
+            .setOnClickListener(R.id.call,{
+                //停止播放音乐
+                MediaHelper.stop()
+                call?.dismiss()
+                //跳转到通话页面
+                val intent = Intent(this,VideoActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+
+            })
             .setCancelable(false)
             .fromBottom(true)
             .setBackgroundTransparence(1f)
-            .setback(true)
+            .setback(false)
             .showSystem()
     }
 
