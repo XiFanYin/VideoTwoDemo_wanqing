@@ -2,8 +2,7 @@ package com.tencent.videotwodemo_wangqing.videoservice
 
 import android.app.Service
 import android.content.Intent
-import android.os.Binder
-import android.os.IBinder
+import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
@@ -55,6 +54,19 @@ class VideoService : Service(), IVideo {
     //远程视频回调
     lateinit var mRemoteSurfaceView: (LinkedList<Pair<Int, SurfaceView>>) -> Unit
 
+
+    //创建Handler，去发送心跳消息，底层处理的心跳消息没法用
+    private val mHandler  = object :Handler(){
+        override fun handleMessage(msg: Message) {
+            if (msg.what==100){
+                wsManager?.sendMessage("心跳内容")
+                sendEmptyMessageDelayed(100,1000)
+            }
+        }
+    }
+
+
+
     private lateinit var user: SocketUser
     private lateinit var gson: Gson
 
@@ -68,14 +80,13 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("12345", "张三")
+        user = SocketUser("111111", "秦荣双")
         gson = Gson()
 
     }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e("rrrrrrrrrrrr", "onStartCommand")
         //连接后台服务
         connectService()
         return START_REDELIVER_INTENT
@@ -90,7 +101,7 @@ class VideoService : Service(), IVideo {
         wsManager = WsManager.Builder(App.ApplicationINSTANCE)
             .client(
                 OkHttpClient().newBuilder()
-                    .pingInterval(10, TimeUnit.SECONDS)
+//                    .pingInterval(10, TimeUnit.SECONDS)
                     .retryOnConnectionFailure(true)
                     .build()
             )
@@ -107,11 +118,13 @@ class VideoService : Service(), IVideo {
     //websocket监听
     private val wsStatusListener: WsStatusListener = object : WsStatusListener() {
         override fun onOpen(response: Response) {
+            Log.e("rrrrrrr","onOpen")
             //连接后台成功
+            mHandler.sendEmptyMessageDelayed(100,10000)
         }
 
         override fun onMessage(text: String) {
-            Log.e("rrrrrrrrr",text)
+            Log.e("rrrrrrr",text)
          val data=  gson.fromJson<ServicePullData>(text, ServicePullData::class.java)
             //如果正在通话，就告诉服务器，当前人正在通话
             if (videoManager.isCalling) {
@@ -125,7 +138,10 @@ class VideoService : Service(), IVideo {
         }
 
         override fun onMessage(bytes: ByteString) {}
-        override fun onReconnect() {}
+        override fun onReconnect() {
+            Log.e("rrrrrrr", "WsManager-----onReconnect")
+
+        }
         override fun onClosing(code: Int, reason: String) {
             Log.e("rrrrrrr", "WsManager-----onClosing")
         }
@@ -135,7 +151,9 @@ class VideoService : Service(), IVideo {
         }
 
         override fun onFailure(t: Throwable, response: Response?) {
+            Log.e("rrrrrrr","onFailure")
             //正在连接后台
+            mHandler.removeCallbacksAndMessages(null)
         }
     }
 

@@ -38,7 +38,7 @@ class VideoManager(val Ivideo: IVideo) {
                     VideoEventCode.REMOTEENTER -> {//进入频道
                         //如果当前用户已经存在，就不添加
                         if (mSurfaceView.any { it.first == uid }) {
-                            return
+                            mSurfaceView.removeIf { t ->  t.first==uid }
                         }
                         val mRemoteSurfaceView =
                             RtcEngine.CreateRendererView(App.ApplicationINSTANCE)
@@ -186,6 +186,7 @@ class VideoManager(val Ivideo: IVideo) {
         mRtcEngine!!.leaveChannel()
         //同步方法
         RtcEngine.destroy()
+
         isCalling = false
     }
 
