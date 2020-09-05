@@ -4,26 +4,41 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.google.gson.Gson
 import com.tencent.videotwodemo_wangqing.R
+import com.tencent.videotwodemo_wangqing.app.App
+import com.tencent.videotwodemo_wangqing.dialog.AlertDialog
+import com.tencent.videotwodemo_wangqing.socketservice.SocketUser
 import com.tencent.videotwodemo_wangqing.utils.FloatingWindowHelper
+import com.tencent.videotwodemo_wangqing.utils.MediaHelper
 import com.tencent.videotwodemo_wangqing.utils.dp2px
 import com.tencent.videotwodemo_wangqing.videoactivity.VideoActivity
 import com.tencent.videotwodemo_wangqing.videoutil.IVideo
 import com.tencent.videotwodemo_wangqing.videoutil.VideoError
 import com.tencent.videotwodemo_wangqing.videoutil.VideoManager
+import com.tencent.videotwodemo_wangqing.websocket.WsManager
+import com.tencent.videotwodemo_wangqing.websocket.listener.WsStatusListener
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okio.ByteString
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class VideoService : Service(), IVideo {
 
     companion object {
         //标记服务是否开启
         var isStart = false
+
         //静音按钮
         var audioState = false
+
+        var wsManager: WsManager? = null
     }
 
     //视频管理者
@@ -38,6 +53,10 @@ class VideoService : Service(), IVideo {
     //远程视频回调
     lateinit var mRemoteSurfaceView: (LinkedList<Pair<Int, SurfaceView>>) -> Unit
 
+    private lateinit var user: SocketUser
+    private lateinit var gson: Gson
+
+    private var call: AlertDialog? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -46,6 +65,93 @@ class VideoService : Service(), IVideo {
         videoManager = VideoManager(this)
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
+        //创建socket连接对象
+        user = SocketUser("123", "张三")
+        gson = Gson()
+
+    }
+
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("rrrrrrrrrrrr", "onStartCommand")
+        //连接后台服务
+        connectService()
+        return START_REDELIVER_INTENT
+    }
+
+
+    /**
+     * 连接后台服务器，建立长连接
+     */
+    private fun connectService() {
+        //创建websocket管理者
+        wsManager = WsManager.Builder(App.ApplicationINSTANCE)
+            .client(
+                OkHttpClient().newBuilder()
+                    .pingInterval(10, TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(true)
+                    .build()
+            )
+            .needReconnect(true)
+            .wsUrl("ws://192.168.1.196:9326?user=" + gson.toJson(user))
+            .build()
+        //设置监听
+        wsManager?.setWsStatusListener(wsStatusListener)
+        //开始连接
+        wsManager?.startConnect()
+    }
+
+
+    //websocket监听
+    private val wsStatusListener: WsStatusListener = object : WsStatusListener() {
+        override fun onOpen(response: Response) {
+            //连接后台成功
+        }
+
+        override fun onMessage(text: String) {
+            Log.e("rrrrrrrr", text)
+
+            //如果正在通话，就告诉服务器，当前人正在通话
+            if (videoManager.isCalling) {
+            } else {
+                //播放音乐
+                MediaHelper.playSound(assets.openFd("most_lucky.m4a"))
+                showCallDialog()
+            }
+
+
+        }
+
+        override fun onMessage(bytes: ByteString) {}
+        override fun onReconnect() {}
+        override fun onClosing(code: Int, reason: String) {
+            Log.e("rrrrrrr", "WsManager-----onClosing")
+        }
+
+        override fun onClosed(code: Int, reason: String) {
+            Log.e("rrrrrrr", "WsManager-----onClosed")
+        }
+
+        override fun onFailure(t: Throwable, response: Response?) {
+            //正在连接后台
+        }
+    }
+
+
+    //显示被呼叫的dialog
+    private fun showCallDialog() {
+        call?.dismiss()
+        call = AlertDialog.Builder(this)
+            .setContentView(R.layout.dialog_call)
+            .setWidthAndHeight(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            .setCancelable(false)
+            .fromBottom(true)
+            .setBackgroundTransparence(1f)
+            .setback(true)
+            .showSystem()
     }
 
 
@@ -58,6 +164,10 @@ class VideoService : Service(), IVideo {
     override fun onRemoteChanged(mRemoteSurfaceView: LinkedList<Pair<Int, SurfaceView>>) {
         this@VideoService.mRemoteSurfaceView.invoke(mRemoteSurfaceView)
     }
+
+
+
+
 
     //视频发生错误
     override fun onError(error: VideoError) {
@@ -78,7 +188,8 @@ class VideoService : Service(), IVideo {
         lateinit var layout_float: FrameLayout
 
         //初始化
-        fun initVideo(uid:Int,
+        fun initVideo(
+            uid: Int,
             localSurfaceView: (SurfaceView?) -> Unit,
             mRemoteSurfaceView: (LinkedList<Pair<Int, SurfaceView>>) -> Unit
         ) {
@@ -119,7 +230,8 @@ class VideoService : Service(), IVideo {
             //获取悬浮窗的父类
             val patient = (videoManager.localSurfaceView!!.second.parent as ViewGroup)
             //打入布局
-            layout_float = layoutInflater.inflate(R.layout.float_layout, patient, false) as FrameLayout
+            layout_float =
+                layoutInflater.inflate(R.layout.float_layout, patient, false) as FrameLayout
             //移除原有的挂载
             patient.removeAllViews()
             //添加新的挂载
@@ -149,8 +261,11 @@ class VideoService : Service(), IVideo {
             this@VideoService.mRemoteSurfaceView = mRemoteSurfaceView
             mFloatingWindowHelper.clear()
             mFloatingWindowHelper.destroy()
-            videoManager.localSurfaceView!!.second.layoutParams =FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT)
-            this@VideoService. mLocalSurfaceView.invoke(videoManager.localSurfaceView!!.second)
+            videoManager.localSurfaceView!!.second.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            this@VideoService.mLocalSurfaceView.invoke(videoManager.localSurfaceView!!.second)
             this@VideoService.mRemoteSurfaceView.invoke(videoManager.mSurfaceView)
         }
 

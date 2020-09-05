@@ -25,6 +25,10 @@ class VideoManager(val Ivideo: IVideo) {
 
     var localSurfaceView: Pair<Int, SurfaceView>? = null
 
+    //是否正在通话中
+     var isCalling = false
+
+
     init {
         handler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
@@ -77,7 +81,8 @@ class VideoManager(val Ivideo: IVideo) {
     /**
      * 初始化视频
      */
-    fun initVideo(uid:Int) {
+    fun initVideo(uid: Int) {
+        isCalling = true
         try {
             //初始化视频设置全局回调
             mRtcEngine = RtcEngine.create(
@@ -181,6 +186,10 @@ class VideoManager(val Ivideo: IVideo) {
         mRtcEngine!!.leaveChannel()
         //同步方法
         RtcEngine.destroy()
+        isCalling = false
     }
+
+
+
 
 }

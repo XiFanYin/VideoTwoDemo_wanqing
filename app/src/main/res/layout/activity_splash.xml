@@ -6,24 +6,12 @@
     android:background="#484258">
 
 
-    <Button
-        android:id="@+id/connect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="连接服务器" />
+
 
 
 
     <Button
-        android:id="@+id/sendMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="发送webSocket消息" />
-
-
-    <Button
+        android:layout_marginTop="30dp"
         android:id="@+id/btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

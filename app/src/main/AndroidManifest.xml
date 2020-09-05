@@ -32,8 +32,6 @@
 
         </activity>
 
-        <service android:name="com.tencent.videotwodemo_wangqing.socketservice.SocketService"/>
-
 
         <activity
             android:name="com.tencent.videotwodemo_wangqing.videoactivity.VideoActivity"
