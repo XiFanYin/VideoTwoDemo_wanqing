@@ -66,7 +66,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("123", "张三")
+        user = SocketUser("456", "李四")
         gson = Gson()
 
     }
@@ -109,8 +109,8 @@ class VideoService : Service(), IVideo {
         }
 
         override fun onMessage(text: String) {
-            Log.e("rrrrrrrr", text)
 
+            Log.e("rrrrrrrrrr",text)
             //如果正在通话，就告诉服务器，当前人正在通话
             if (videoManager.isCalling) {
             } else {

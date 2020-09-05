@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tencent.videotwodemo_wangqing.R
+import com.tencent.videotwodemo_wangqing.utils.MediaHelper
 import com.tencent.videotwodemo_wangqing.videoservice.VideoService
 import kotlinx.android.synthetic.main.activity_video.*
 
@@ -57,7 +58,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         //挂断按钮关闭服务
         btn_call.setOnClickListener {
             finish()
-            stopService(Intent(this, VideoService::class.java))
+
         }
 
         //设置条目被点击,切换大小屏
@@ -145,6 +146,8 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
                     big_container.addView(it)
                 }
             }, {
+                //停止本地音乐播放
+                MediaHelper.stop()
                 patientAdapter.setNewData(it.toMutableList())
             })
             //加入频道
@@ -172,6 +175,8 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         super.onDestroy()
         //解绑服务
         unbindService(this)
+        //停止本地音乐播放
+        MediaHelper.stop()
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {

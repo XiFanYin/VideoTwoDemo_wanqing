@@ -31,9 +31,12 @@ public class MediaHelper {
 
 
     public static void stop() {
-        mPlayer.stop();
-        mPlayer.release();
-        mPlayer = null;
+        if (mPlayer!=null){
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+
     }
 
 
