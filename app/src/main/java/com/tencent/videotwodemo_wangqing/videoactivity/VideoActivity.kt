@@ -58,7 +58,8 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         //挂断按钮关闭服务
         btn_call.setOnClickListener {
             finish()
-
+            //离开频道
+            mBinder.leaveChannel()
         }
 
         //设置条目被点击,切换大小屏
@@ -140,7 +141,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         this.mBinder = service as VideoService.MyBinder
         if (intent.getStringExtra("from") == null) {
             //初始化并设置回调监听
-            mBinder.initVideo(67890,{
+            mBinder.initVideo(12345,{
                 big_container.removeAllViews()
                 if (it != null) {
                     big_container.addView(it)
@@ -151,7 +152,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
                 patientAdapter.setNewData(it.toMutableList())
             })
             //加入频道
-            mBinder.joinChannel("TTTTT",optionalUid = 67890)
+            mBinder.joinChannel("TTTTT",optionalUid = 12345)
         } else {
             //隐藏小窗口，显示到打窗口上
             mBinder.dismassFloatWindow({
@@ -167,7 +168,12 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
 
     }
 
-
+    //用户按下返回键
+    override fun onBackPressed() {
+        super.onBackPressed()
+        //离开频道
+        mBinder.leaveChannel()
+    }
 
 
 

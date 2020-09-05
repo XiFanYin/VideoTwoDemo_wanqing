@@ -39,6 +39,7 @@ class VideoService : Service(), IVideo {
         //静音按钮
         var audioState = false
 
+        //websocket管理者
         var wsManager: WsManager? = null
     }
 
@@ -67,7 +68,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("67890", "李四")
+        user = SocketUser("12345", "张三")
         gson = Gson()
 
     }
@@ -110,12 +111,8 @@ class VideoService : Service(), IVideo {
         }
 
         override fun onMessage(text: String) {
-
             Log.e("rrrrrrrrr",text)
-
          val data=  gson.fromJson<ServicePullData>(text, ServicePullData::class.java)
-
-
             //如果正在通话，就告诉服务器，当前人正在通话
             if (videoManager.isCalling) {
             } else {
@@ -290,6 +287,10 @@ class VideoService : Service(), IVideo {
             this@VideoService.mRemoteSurfaceView.invoke(videoManager.mSurfaceView)
         }
 
+        //离开频道
+        fun leaveChannel(){
+            videoManager.leaveChannel()
+        }
 
     }
 
@@ -297,7 +298,6 @@ class VideoService : Service(), IVideo {
     override fun onDestroy() {
         super.onDestroy()
         isStart = false
-        videoManager.leaveChannel()
     }
 
 
