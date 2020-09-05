@@ -1,0 +1,46 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+
+
+    <!--显示状态栏，并且是透明的，需要每个布局添加一个高度为10的占位布局，目前这个没有用-->
+    <style name="transparency" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <!--Android 5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+
+    <!--万能dialog样式-->
+    <style name="dialog" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--dialog从底部弹出的动画-->
+    <style name="dialog_from_bottom_animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_from_bottom_anim_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_from_bottom_anim_out</item>
+    </style>
+
+
+    <!--dialog默认的缩放动画-->
+    <style name="scale_anim">
+    </style>
+
+
+
+</resources>
