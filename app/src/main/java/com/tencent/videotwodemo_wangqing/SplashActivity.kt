@@ -35,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
             ).subscribe({
                 if (it) {
                     //向后台发生推送给谁的列表
-                    val map = mapOf("hanlderType" to "VIDEO","list" to listOf(SocketUser("222222","孙义博"),SocketUser("111111","殷飞龙")))
+                    val map = mapOf("hanlderType" to "VIDEO","list" to listOf(SocketUser("111111","殷飞龙"),SocketUser("333333","郑焕奇")))
                     VideoService.wsManager?.sendMessage(Gson().toJson(map))
                     //自己先进入房间
                     startActivity(Intent(this, VideoActivity::class.java))

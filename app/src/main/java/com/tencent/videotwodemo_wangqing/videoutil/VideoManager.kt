@@ -184,6 +184,7 @@ class VideoManager(val Ivideo: IVideo) {
     fun leaveChannel() {
         //异步方法
         mRtcEngine!!.leaveChannel()
+        mSurfaceView.clear()
         isCalling = false
     }
 
