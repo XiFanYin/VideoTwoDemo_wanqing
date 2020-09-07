@@ -39,7 +39,7 @@ class SplashActivity : AppCompatActivity() {
                     //自己先进入房间
                     startActivity(Intent(this, VideoActivity::class.java))
                     //播放一个等待的音乐
-                    MediaHelper.playSound(assets.openFd("most_lucky.m4a"))
+                    MediaHelper.playSound(assets.openFd("lingsheng.aac"))
                 } else {
                     Toast.makeText(this, "请给权限", Toast.LENGTH_LONG).show()
                 }

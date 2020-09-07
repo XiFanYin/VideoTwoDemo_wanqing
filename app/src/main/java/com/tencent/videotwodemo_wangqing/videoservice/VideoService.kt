@@ -130,7 +130,7 @@ class VideoService : Service(), IVideo {
             if (videoManager.isCalling) {
             } else {
                 //播放音乐
-                MediaHelper.playSound(assets.openFd("most_lucky.m4a"))
+                MediaHelper.playSound(assets.openFd("lingsheng.aac"))
                 showCallDialog(data)
             }
 
