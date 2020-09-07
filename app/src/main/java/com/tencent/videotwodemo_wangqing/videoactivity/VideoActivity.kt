@@ -145,7 +145,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
                 //停止本地音乐播放
                 MediaHelper.stop()
                 //创建远程视频展示列表
-                patientAdapter = RemoteListAdapter(this, null)
+                patientAdapter = RemoteListAdapter(this, it)
                 mRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
                 mRecyclerView.adapter = patientAdapter
                 //设置条目被点击,切换大小屏
