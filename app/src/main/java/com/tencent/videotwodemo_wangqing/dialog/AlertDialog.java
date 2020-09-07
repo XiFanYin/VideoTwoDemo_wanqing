@@ -237,7 +237,7 @@ public class AlertDialog extends Dialog {
 
         public AlertDialog showSystem() {
             final AlertDialog dialog = create();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
                 dialog.getWindow().setType((WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY));
             } else {
                 dialog.getWindow().setType((WindowManager.LayoutParams.TYPE_SYSTEM_ALERT));

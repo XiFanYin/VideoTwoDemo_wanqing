@@ -2,7 +2,9 @@ package com.tencent.videotwodemo_wangqing.videoservice
 
 import android.app.Service
 import android.content.Intent
+import android.net.Uri
 import android.os.*
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
@@ -80,7 +82,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("222222", "孙义博")
+        user = SocketUser("111111", "郑焕奇")
         gson = Gson()
 
     }
@@ -131,6 +133,7 @@ class VideoService : Service(), IVideo {
             } else {
                 //播放音乐
                 MediaHelper.playSound(assets.openFd("lingsheng.aac"))
+                    //通知服务开启悬浮窗
                 showCallDialog(data)
             }
 
