@@ -144,7 +144,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         this.mBinder = service as VideoService.MyBinder
         if (intent.getStringExtra("from") == null) {
             //初始化并设置回调监听
-            mBinder.initVideo(222222,{
+            mBinder.initVideo(111111,{
                 big_container.removeAllViews()
                 if (it != null) {
                     big_container.addView(it)
@@ -156,7 +156,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
                 Log.e("rrrrrrrrrrr","有人添加进来")
             })
             //加入频道
-            mBinder.joinChannel("TTTTT",optionalUid = 222222)
+            mBinder.joinChannel("TTTTT",optionalUid = 111111)
         } else {
             //隐藏小窗口，显示到打窗口上
             mBinder.dismassFloatWindow({
