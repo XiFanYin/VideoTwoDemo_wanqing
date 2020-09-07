@@ -21,8 +21,6 @@ class VideoManager(val Ivideo: IVideo) {
     private var mRtcEngine: RtcEngine? = null
     private var handler: Handler
     val mSurfaceView = LinkedList<Pair<Int, SurfaceView>>()
-
-
     var localSurfaceView: Pair<Int, SurfaceView>? = null
 
     //是否正在通话中
@@ -38,11 +36,14 @@ class VideoManager(val Ivideo: IVideo) {
                     VideoEventCode.REMOTEENTER -> {//进入频道
                         //如果当前用户已经存在，就不添加
                         if (mSurfaceView.any { it.first == uid }) {
-                            mSurfaceView.removeIf { t ->  t.first==uid }
+                            mSurfaceView.removeIf { t ->
+                                t.second.setZOrderMediaOverlay(false)
+                                t.first==uid }
                         }
                         val mRemoteSurfaceView =
                             RtcEngine.CreateRendererView(App.ApplicationINSTANCE)
                         mRemoteSurfaceView.setZOrderMediaOverlay(true)
+                        mRemoteSurfaceView.setTag(uid)
                         mSurfaceView.add(Pair(uid, mRemoteSurfaceView))
                         //设置远程用户加入
                         Ivideo.onRemoteChanged(mSurfaceView)
@@ -111,6 +112,7 @@ class VideoManager(val Ivideo: IVideo) {
             //调用创建本地视图
             val mLocalSurfaceView = RtcEngine.CreateRendererView(App.ApplicationINSTANCE)
             localSurfaceView = Pair(uid, mLocalSurfaceView)
+            mLocalSurfaceView.setTag(uid)
             //扔出去渲染UI去
             Ivideo.LocalSurfaceView(mLocalSurfaceView)
             // 设置本地视图。
@@ -184,9 +186,6 @@ class VideoManager(val Ivideo: IVideo) {
     fun leaveChannel() {
         //异步方法
         mRtcEngine!!.leaveChannel()
-        //同步方法
-        RtcEngine.destroy()
-
         isCalling = false
     }
 

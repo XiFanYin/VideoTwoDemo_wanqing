@@ -18,8 +18,6 @@ class VideoEvent(val handler: Handler) : IRtcEngineEventHandler() {
     ) {
         val message=handler.obtainMessage(VideoEventCode.REMOTEENTER,uid)
         handler.sendMessage(message)
-
-        Log.e("rrrrrrrrrr","onFirstRemoteVideoDecoded")
     }
 
 
