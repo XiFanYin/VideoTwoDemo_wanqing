@@ -32,12 +32,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
 
-        //创建远程视频展示列表
-        patientAdapter = RemoteListAdapter(this, null)
-        mRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        mRecyclerView.adapter = patientAdapter
-        //设置Recycler禁止缓存
-        mRecyclerView.getRecycledViewPool().setMaxRecycledViews(0,0)
+
         //判断服务是否正在运行
         if (VideoService.isStart) {
             btn_mute.setImageResource( if (VideoService.audioState) R.drawable.btn_mute else R.drawable.btn_unmute)
@@ -65,10 +60,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
             mBinder.leaveChannel()
         }
 
-        //设置条目被点击,切换大小屏
-        patientAdapter.setItemClickListener { view, position, data ->
-            mBinder.switchBigContainerShow(position)
-        }
+
         //视频通话运行在后台
         iv_dismiss.setOnClickListener {
             //判断是否拥有悬浮窗权限，无则跳转悬浮窗权限授权页面
@@ -144,7 +136,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         this.mBinder = service as VideoService.MyBinder
         if (intent.getStringExtra("from") == null) {
             //初始化并设置回调监听
-            mBinder.initVideo(111111,{
+            mBinder.initVideo(222222,{
                 big_container.removeAllViews()
                 if (it != null) {
                     big_container.addView(it)
@@ -152,11 +144,17 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
             }, {
                 //停止本地音乐播放
                 MediaHelper.stop()
-                patientAdapter.setNewData(it.toMutableList())
-                Log.e("rrrrrrrrrrr","有人添加进来")
+                //创建远程视频展示列表
+                patientAdapter = RemoteListAdapter(this, null)
+                mRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                mRecyclerView.adapter = patientAdapter
+                //设置条目被点击,切换大小屏
+                patientAdapter.setItemClickListener { view, position, data ->
+                    mBinder.switchBigContainerShow(position)
+                }
             })
             //加入频道
-            mBinder.joinChannel("TTTTT",optionalUid = 111111)
+            mBinder.joinChannel("TTTTT",optionalUid = 222222)
         } else {
             //隐藏小窗口，显示到打窗口上
             mBinder.dismassFloatWindow({

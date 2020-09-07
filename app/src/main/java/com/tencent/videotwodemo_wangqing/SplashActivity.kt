@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.tencent.videotwodemo_wangqing.bean.SocketUser
 import com.tencent.videotwodemo_wangqing.utils.MediaHelper
 import com.tencent.videotwodemo_wangqing.videoactivity.VideoActivity
 import com.tencent.videotwodemo_wangqing.videoservice.VideoService
@@ -34,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
             ).subscribe({
                 if (it) {
                     //向后台发生推送给谁的列表
-                    val map = mapOf("hanlderType" to "VIDEO", "id" to "222222","username" to "孙义博")
+                    val map = mapOf("hanlderType" to "VIDEO","list" to listOf(SocketUser("222222","孙义博"),SocketUser("333333","郑焕奇")))
                     VideoService.wsManager?.sendMessage(Gson().toJson(map))
                     //自己先进入房间
                     startActivity(Intent(this, VideoActivity::class.java))
