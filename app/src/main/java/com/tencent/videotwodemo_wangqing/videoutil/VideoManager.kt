@@ -36,9 +36,7 @@ class VideoManager(val Ivideo: IVideo) {
                     VideoEventCode.REMOTEENTER -> {//进入频道
                         //如果当前用户已经存在，就不添加
                         if (mSurfaceView.any { it.first == uid }) {
-                            mSurfaceView.removeIf { t ->
-                                t.second.setZOrderMediaOverlay(false)
-                                t.first==uid }
+                          return
                         }
                         val mRemoteSurfaceView =
                             RtcEngine.CreateRendererView(App.ApplicationINSTANCE)

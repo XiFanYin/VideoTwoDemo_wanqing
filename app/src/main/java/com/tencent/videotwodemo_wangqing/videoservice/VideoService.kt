@@ -80,7 +80,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("222222", "孙义博")
+        user = SocketUser("333333", "郑焕奇")
         gson = Gson()
 
     }
