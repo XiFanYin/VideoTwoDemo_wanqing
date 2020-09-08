@@ -145,7 +145,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         this.mBinder = service as VideoService.MyBinder
         if (intent.getStringExtra("from") == null) {
             //初始化并设置回调监听
-            mBinder.initVideo(111111,{
+            mBinder.initVideo(333333,{
                 big_container.removeAllViews()
                 if (it != null) {
                     big_container.addView(it)
@@ -157,7 +157,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
                 patientAdapter.setNewData(it)
             })
             //加入频道
-            mBinder.joinChannel("TTTTT",optionalUid = 111111)
+            mBinder.joinChannel("TTTTT",optionalUid = 333333)
         } else {
             //隐藏小窗口，显示到打窗口上
             mBinder.dismassFloatWindow({
