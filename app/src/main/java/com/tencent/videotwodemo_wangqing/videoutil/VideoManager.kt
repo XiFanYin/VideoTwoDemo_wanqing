@@ -186,6 +186,7 @@ class VideoManager(val Ivideo: IVideo) {
         mRtcEngine!!.leaveChannel()
         mSurfaceView.clear()
         isCalling = false
+        RtcEngine.destroy()
     }
 
 
