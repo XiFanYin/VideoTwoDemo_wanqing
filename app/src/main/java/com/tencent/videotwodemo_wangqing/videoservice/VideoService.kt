@@ -108,7 +108,7 @@ class VideoService : Service(), IVideo {
                     .build()
             )
             .needReconnect(true)
-            .wsUrl("ws://192.168.1.196:9326?user=" + gson.toJson(user))
+            .wsUrl("ws://114.215.126.163:9326?user=" + gson.toJson(user))
             .build()
         //设置监听
         wsManager?.setWsStatusListener(wsStatusListener)

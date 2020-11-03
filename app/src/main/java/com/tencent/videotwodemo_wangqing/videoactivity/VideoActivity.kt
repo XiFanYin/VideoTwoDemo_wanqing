@@ -39,6 +39,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
         //设置Recycler禁止缓存
         mRecyclerView.getRecycledViewPool().setMaxRecycledViews(0,0)
         //判断服务是否正在运行
+        VideoService. audioState = false
         if (VideoService.isStart) {
             btn_mute.setImageResource( if (VideoService.audioState) R.drawable.btn_mute else R.drawable.btn_unmute)
             bindService(Intent(this, VideoService::class.java), this, BIND_AUTO_CREATE)
