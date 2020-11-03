@@ -82,7 +82,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("333333", "郑焕奇")
+        user = SocketUser("222222", "孙义博")
         gson = Gson()
 
     }
@@ -128,16 +128,17 @@ class VideoService : Service(), IVideo {
         override fun onMessage(text: String) {
             Log.e("rrrrrrr",text)
          val data=  gson.fromJson<ServicePullData>(text, ServicePullData::class.java)
-            //如果正在通话，就告诉服务器，当前人正在通话
-            if (videoManager.isCalling) {
-            } else {
-                //播放音乐
-                MediaHelper.playSound(assets.openFd("lingsheng.aac"))
+            if ("VIDEO".equals(data.hanlderType)){
+                //如果正在通话，就告诉服务器，当前人正在通话
+                if (videoManager.isCalling) {
+                } else {
+                    //播放音乐
+                    MediaHelper.playSound(assets.openFd("lingsheng.aac"))
                     //通知服务开启悬浮窗
-                showCallDialog(data)
+                    showCallDialog(data)
+                }
+
             }
-
-
         }
 
         override fun onMessage(bytes: ByteString) {}
