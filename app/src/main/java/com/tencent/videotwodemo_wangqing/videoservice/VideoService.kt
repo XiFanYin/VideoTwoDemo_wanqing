@@ -82,7 +82,7 @@ class VideoService : Service(), IVideo {
         //获取打气筒对象
         layoutInflater = LayoutInflater.from(this@VideoService)
         //创建socket连接对象
-        user = SocketUser("222222", "孙义博")
+        user = SocketUser("777777", "上级医院")
         gson = Gson()
 
     }
@@ -286,6 +286,7 @@ class VideoService : Service(), IVideo {
                 layout_float.removeAllViews()
                 val eee = Intent(this@VideoService, VideoActivity::class.java)
                 eee.putExtra("from", "Service")
+                eee.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
                 startActivity(eee)
             }
 
