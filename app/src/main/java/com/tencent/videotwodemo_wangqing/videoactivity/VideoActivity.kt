@@ -158,7 +158,7 @@ class VideoActivity : AppCompatActivity(), ServiceConnection {
                 patientAdapter.setNewData(it)
             })
             //加入频道
-            mBinder.joinChannel("TTTTT",optionalUid = 777777)
+            mBinder.joinChannel("shuzizhengzhou",optionalUid = 777777)
         } else {
             //隐藏小窗口，显示到打窗口上
             mBinder.dismassFloatWindow({
